@@ -1,5 +1,3 @@
 # title
 
-[]
-
-more text here
+[test file 3](test_link.com)
