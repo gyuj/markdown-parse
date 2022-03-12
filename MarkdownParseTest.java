@@ -9,6 +9,7 @@ import java.util.List;
 
 public class MarkdownParseTest {
 
+    /**
     @Test
     public void snipTest1() throws IOException {
         String file=Files.readString(Path.of("snippet-1.md"));
@@ -29,9 +30,9 @@ public class MarkdownParseTest {
         ArrayList<String> sLink = MarkdownParse.getLinks(content);
         assertEquals(List.of("https://www.twitter.com, https://ucsd-cse15l-w22.github.io, https://cse.ucsd.edu"), sLink);
     }
+    */
 
-    /**
-     * Commented out previous tests of files from class
+   
     @Test
     public void testFile1() throws IOException {
         String contents= Files.readString(Path.of("./test-file.md"));
@@ -78,6 +79,6 @@ public class MarkdownParseTest {
         List<String> expect = List.of();
         assertEquals(MarkdownParse.getLinks(contents), expect);
     }
-    */
+   
     
 }
