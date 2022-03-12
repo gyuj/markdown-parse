@@ -10,34 +10,41 @@ public class MarkdownParse {
         // find the next [, then find the ], then find the (, then take up to
         // the next )
         int currentIndex = 0;
+        //run through entire string
         while(currentIndex < markdown.length()) {
+            //("", x) the first time it shows up after certain index x
             int nextOpenBracket = markdown.indexOf("[", currentIndex);
-            if (nextOpenBracket == -1){
-                System.out.println("Invalid Input");
-                throw new IllegalArgumentException();
-            }
-            while (nextOpenBracket > 0 && markdown.charAt(nextOpenBracket-1)=='!'){
-                nextOpenBracket = markdown.indexOf("[", nextOpenBracket+1);
-            }
             int nextCloseBracket = markdown.indexOf("]", nextOpenBracket);
-            if (nextCloseBracket==-1)
-            {
-                break;
-            }
+            //link open
             int openParen = markdown.indexOf("(", nextCloseBracket);
             int closeParen = markdown.indexOf(")", openParen);
-            if (openParen == nextCloseBracket + 1)
-            {
-                toReturn.add(markdown.substring(openParen + 1, closeParen));
+            //not find -> return -1
+            if(openParen<0 || closeParen<0){
+                break;
             }
+
+            if(nextOpenBracket!=0 && markdown.charAt(nextOpenBracket-1) == '!' ){
+                currentIndex = closeParen + 1;
+                continue;
+            }
+            //end
+            toReturn.add(markdown.substring(openParen + 1, closeParen));
+            //System.out.println(currentIndex); // 0 43
+            //System.out.println(markdown.charAt(currentIndex));
+            //look forward from that point instead of backward
             currentIndex = closeParen + 1;
-            System.out.println(nextCloseBracket);
+            //
+            //System.out.println(currentIndex); // 43 76
+            //charAt
+            
         }
         return toReturn;
     }
     public static void main(String[] args) throws IOException {
 		Path fileName = Path.of(args[0]);
+        //reads the file, parse it into the string
 	    String contents = Files.readString(fileName);
+        //call from main
         ArrayList<String> links = getLinks(contents);
         System.out.println(links);
     }
