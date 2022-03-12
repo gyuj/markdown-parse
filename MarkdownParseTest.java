@@ -9,6 +9,28 @@ import java.util.List;
 public class MarkdownParseTest {
 
     @Test
+    public void snippetOneTest() throws IOException {
+        String content = Files.readString(Path.of("snippet-1.md"));
+        assertEquals(List.of("google.com, google.com, ucsd.edu"),
+        MarkdownParse.getLinks(content));
+    }
+
+    @Test
+    public void snippetTwoTest() throws IOException {
+        String content = Files.readString(Path.of("snippet-2.md"));
+        assertEquals(List.of("a.com, a.com(()), example.com"), 
+        MarkdownParse.getLinks(content));
+    }
+
+    @Test
+    public void snippetThreeTest() throws IOException {
+        String content = Files.readString(Path.of("snippet-3.md"));
+        assertEquals(List.of("Some"));
+    }
+
+    /**
+     * Commented out previous tests of files from class
+    @Test
     public void testFile1() throws IOException {
         String contents= Files.readString(Path.of("./test-file.md"));
         List<String> expect = List.of("https://something.com", "some-page.html");
@@ -54,5 +76,6 @@ public class MarkdownParseTest {
         List<String> expect = List.of();
         assertEquals(MarkdownParse.getLinks(contents), expect);
     }
+    */
     
 }
