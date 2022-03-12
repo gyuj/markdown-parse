@@ -20,14 +20,15 @@ public class MarkdownParseTest {
     @Test
     public void snipTest2() throws IOException {
         String content = Files.readString(Path.of("snippet-2.md"));
-        assertEquals(List.of("a.com, a.com(()), example.com"), 
-        MarkdownParse.getLinks(content));
+        ArrayList<String> sLink = MarkdownParse.getLinks(content);
+        assertEquals(List.of("a.com, a.com(()), example.com"), sLink);
     }
 
     @Test
     public void snipTest3() throws IOException {
         String content = Files.readString(Path.of("snippet-3.md"));
-        assertEquals(List.of("Some"));
+        ArrayList<String> sLink = MarkdownParse.getLinks(content);
+        assertEquals(List.of("randomLink.html"), sLink);
     }
 
     /**
