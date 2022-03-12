@@ -4,48 +4,64 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
+
 public class MarkdownParse {
+    static String[] imageExtensions = {".png", ".jpeg", ".gif", ".csv", ".jpg", ".svg", ".pdf"};
+
     public static ArrayList<String> getLinks(String markdown) {
         ArrayList<String> toReturn = new ArrayList<>();
-        // find the next [, then find the ], then find the (, then take up to
-        // the next )
-        int currentIndex = 0;
-        //run through entire string
+       
+	int currentIndex = 0;
+        int nextOpenBracket = 0;
+        int nextCloseBracket = markdown.indexOf("]");
+        int openParen = markdown.indexOf("(");
+        int closeParen = 0;
         while(currentIndex < markdown.length()) {
-            //("", x) the first time it shows up after certain index x
-            int nextOpenBracket = markdown.indexOf("[", currentIndex);
-            int nextCloseBracket = markdown.indexOf("]", nextOpenBracket);
-            //link open
-            int openParen = markdown.indexOf("(", nextCloseBracket);
-            int closeParen = markdown.indexOf(")", openParen);
-            //not find -> return -1
-            if(openParen<0 || closeParen<0){
+            // Fix for tests 2 and 8
+            int prevIndex = currentIndex;
+            int prevOpenBracket = nextOpenBracket;
+            int prevCloseBracket = nextCloseBracket;
+            int prevOpenParen = openParen;
+            int prevCloseParen = closeParen;
+            //System.out.println("Hello");
+
+            if (nextCloseBracket > openParen) break;
+            nextOpenBracket = markdown.indexOf("[", currentIndex);
+            nextCloseBracket = markdown.indexOf("]", nextOpenBracket);
+            openParen = markdown.indexOf("(", nextCloseBracket);
+            closeParen = markdown.indexOf(")", openParen);
+            //System.out.println("Hello");
+
+            // Fix for tests 2 and 8
+            if(nextOpenBracket == -1 || nextCloseBracket == -1 || 
+            openParen < prevOpenParen || closeParen < prevCloseParen){
                 break;
             }
-
-            if(nextOpenBracket!=0 && markdown.charAt(nextOpenBracket-1) == '!' ){
-                currentIndex = closeParen + 1;
-                continue;
+            if (!checkExtension(markdown.substring(openParen +1, closeParen)) && openParen-nextCloseBracket==1)
+            {
+                if(markdown.substring(openParen + 1, closeParen).indexOf(".")!=-1 && markdown.indexOf(")", closeParen) == -1){
+                    toReturn.add(markdown.substring(openParen + 1, closeParen));
             }
-            //end
-            toReturn.add(markdown.substring(openParen + 1, closeParen));
-            //System.out.println(currentIndex); // 0 43
-            //System.out.println(markdown.charAt(currentIndex));
-            //look forward from that point instead of backward
             currentIndex = closeParen + 1;
-            //
-            //System.out.println(currentIndex); // 43 76
-            //charAt
-            
         }
         return toReturn;
     }
+
+    public static boolean checkExtension(String substring) {
+        for (int i = 0; i < imageExtensions.length; ++i) {
+            if (substring.contains(imageExtensions[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void main(String[] args) throws IOException {
 		Path fileName = Path.of(args[0]);
-        //reads the file, parse it into the string
 	    String contents = Files.readString(fileName);
-        //call from main
         ArrayList<String> links = getLinks(contents);
         System.out.println(links);
     }
+
+		
 }
